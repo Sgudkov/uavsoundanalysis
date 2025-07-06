@@ -1,38 +1,32 @@
+import asyncio
 import json
+import logging
+import pdb
 
+from asgiref.sync import sync_to_async
+from channels.auth import login, get_user
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.layers import get_channel_layer
+from channels.sessions import SessionMiddleware
+from django.apps import apps
+from django.contrib.auth.models import User
 
+Coordinates = apps.get_model('uavanalysis', 'Coordinates')
 
-async def get_updated_placemarks():
-    # Здесь должен быть код для получения данных о метке
-    # Например, запрос к базе данных
-    placemarks = [
-        {
-            "id": 1,
-            "latitude": 59.46,
-            "longitude": 31.62,
-            "label": "Метка 1",
-        },
-        {
-            "id": 2,
-            "latitude": 59.47,
-            "longitude": 31.62,
-            "label": "Метка 2",
-        },
-        {
-            "id": 3,
-            "latitude": 59.48,
-            "longitude": 31.62,
-            "label": "Метка 3",
-        },
-        {
-            "id": 4,
-            "latitude": 59.49,
-            "longitude": 31.62,
-            "label": "Метка 4",
-        },
-    ]
+logger = logging.getLogger(__name__)
+
+@sync_to_async
+def get_updated_placemarks():
+    placemarks = []
+    pla_list = Coordinates.objects.all()
+    for p in pla_list:
+        placemarks.append({
+            'id': p.id,
+            'latitude': p.latitude,
+            'longitude': p.longitude,
+            'label': p.label
+        })
+
     return placemarks
 
 
@@ -44,30 +38,39 @@ class MyWebSocketConsumer(AsyncWebsocketConsumer):
         self.channel_layer = get_channel_layer()
 
     async def connect(self):
-        # Define the room group name to which the client will connect
-        await self.channel_layer.group_add(
-            self.room_group_name,
-            self.channel_name
-        )
-
-        await self.accept()
-
-        # Send the initial set of placemarks
-        await self.send(text_data=json.dumps(
-            {"action": "connected", "coordinates": await get_updated_placemarks()}))
+        logger.info('Connect method called')
+        try:
+            user = await get_user(self.scope)
+            if user.is_authenticated:
+                await self.accept()
+                # Define the room group name to which the client will connect
+                await self.channel_layer.group_add(
+                    self.room_group_name,
+                    self.channel_name
+                )
+                # Send the initial set of placemarks
+                await self.send(text_data=json.dumps(
+                    {"action": "connected", "coordinates": await get_updated_placemarks()}))
+            else:
+                print('not auth', user)
+                await self.close()
+        except Exception as e:
+            logger.error('Error in connect method: %s', e)
 
     async def disconnect(self, close_code):
         await self.close()
 
     async def receive(self, text_data=None, bytes_data=None):
+        print('receive')
+        data: [dict]
         data = json.loads(text_data)
         if data['action'] == 'change_color':
             await self.channel_layer.group_send(
                 self.room_group_name,
                 {
                     'type': 'change_color',  # Define handler name
-                    'id': data.get('id', None),
-                    'color': data.get('color', None),
+                    'coordinates': data.get('coordinates', None),
+                    'color': data.get('color', None)
                 }
             )
             await self.send(data)
@@ -95,4 +98,5 @@ class MyWebSocketConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps({
             'id': event.get('id', None),
             'color': event.get('color', None),
+            'coordinates': event.get('coordinates', None),
         }))

@@ -3,10 +3,11 @@ from django.conf.urls.static import static
 from django.urls import path, include
 
 from . import views
-from uavsoundanalysis.websocket_app.urls import urlpatterns
+from .consumers import MyWebSocketConsumer
 
 urlpatterns = [
     path("", views.index, name="index"),
-    path("map", views.map, name="map"),
-    path('get_new_label/', views.get_new_label_view, name='get_new_label'),
+    path("map", views.myMap, name="map"),
+    path('ws/', MyWebSocketConsumer.as_asgi()),
+    path('test_alarm', views.TestAlarmView.as_view(), name='test_alarm')
 ]

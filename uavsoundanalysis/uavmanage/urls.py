@@ -17,7 +17,7 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include
-from uavsoundanalysis.websocket_app.urls import urlpatterns
+from uavsoundanalysis.uavanalysis.routing import urlpatterns
 
 urlpatterns = [
     path("", include("uavanalysis.urls")),
