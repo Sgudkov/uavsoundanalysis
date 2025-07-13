@@ -1,6 +1,9 @@
+import  { startAudioStreaming, stopAudioStreaming }  from './audio.js';
+
 ymaps.ready(init);
-// Инициализация Яндекс.Карты
+// Initialize the map
 function init() {
+
     var myMap = new ymaps.Map('map', {
         center: [59.47, 31.62],
         zoom: 13
@@ -15,24 +18,29 @@ function init() {
 
     var blinkIntervalIdList = [];
     var alarmElementList = [];
+    var mediaRecorder = null;
 
-    // Подключение к WebSocket
-    var socket = new WebSocket('ws://localhost:8000/ws/');
+    var placemarkJson = [];
 
+    // Connect to the WebSocket
+    var socket = new WebSocket('ws://'+ window.location.host + '/ws/');
+    var socket_audio = null;
 
     socket.onmessage = function(event) {
         var data = JSON.parse(event.data);
-        console.log(data);
-        // Обновляем метки на карте
+
+        // Initialize the markers or update the markers
         if (data.action == "connected"){
-            updateMarkers(data, myMap);
-            updatePlacemarksList(data.coordinates);
+            initMarkers(data, myMap);
+            setPlacemarksToContainer(data.coordinates);
         } else{
             updateMarkerbyAlarm(data, myMap);
         }
     };
 
-    function updatePlacemarksList(placemarks) {
+
+    // Set placemarks to HTML container
+    function setPlacemarksToContainer(placemarks) {
         const placemarksListContainer = document.getElementById('placemarks-list');
         placemarksListContainer.innerHTML = '';
         placemarks.forEach((placemark) => {
@@ -52,7 +60,7 @@ function init() {
 
 
     function updateMarkerbyAlarm(data, map) {
-        // Логика обновления метки
+        // Update the markers based on the alarm data
 
         blinkIntervalIdList.length = 0;
         alarmElementList.length = 0;
@@ -60,11 +68,11 @@ function init() {
         const coordinates = data.coordinates;
         console.log('updateMarkerbyAlarm');
         coordinates.forEach(function(coordinate) {
-            console.log(coordinate.id);
+
             const placemark = map.geoObjects.get(coordinate.id - 1)
             if (placemark){
-//                placemark.options.set('iconColor', data.color);
-               blinkIntervalId = setInterval(function() {
+              // Blink the placemark
+              var blinkIntervalId = setInterval(function() {
                   blinkPlacemark(placemark);
                 }, blinkInterval);
                blinkIntervalIdList.push(blinkIntervalId);
@@ -75,13 +83,12 @@ function init() {
             var element = document.getElementById(`placemark-${coordinate.id}`)
             element.style.backgroundColor = data.color;
             alarmElementList.push(element);
-            console.log(element);
         })
 
     }
 
-    function updateMarkers(data, map) {
-        // Логика обновления меток
+    function initMarkers(data, map) {
+        // Initialize the markers
         const coordinates = data.coordinates;
         coordinates.forEach(function(coordinate) {
             var placemark = new ymaps.Placemark([
@@ -93,14 +100,43 @@ function init() {
             });
             placemark.options.set('iconColor', 'black');
             map.geoObjects.add(placemark);
+
+            placemark.events.add('click', function(e) {
+                var placemarkId = e.get('target').properties.get('id');
+                console.log(`Placemark ${placemarkId} clicked!`);
+            });
+
+            // Collect initialized placemark data
+            placemarkJson.push({
+                id: coordinate.id,
+                latitude: coordinate.latitude,
+                longitude: coordinate.longitude
+            });
+
         });
     }
 
+    let startWorkButtonPressed = false;
 
+    document.getElementById('start-work-button').addEventListener('click', function() {
+
+        this.classList.toggle('clicked');
+
+        if (!startWorkButtonPressed) {
+            startAudioStreaming(placemarkJson);
+            startWorkButtonPressed = true;
+        } else {
+            stopAudioStreaming();
+            startWorkButtonPressed = false;
+        }
+
+        console.log('Start work button clicked');
+
+    });
 
     // Add event listeners to the buttons to send notifications to the WebSocket
     document.getElementById('clear-alarm-button').addEventListener('click', function() {
-        // Send notification to WebSocket
+
         console.log('Clear alarm button clicked');
 
         // Clear the interval
@@ -110,7 +146,6 @@ function init() {
 
          // Disable blinking for all placemarks
         myMap.geoObjects.each(function(placemark) {
-          id = placemark.properties.get('id');
           placemark.options.set('iconColor', 'black'); // reset icon color to default
         });
 
@@ -124,17 +159,6 @@ function init() {
         // Send notification to WebSocket
         console.log('Test alarm button clicked');
 
-        var placemarkJson = [];
-
-        myMap.geoObjects.each(function(placemark) {
-            placemarkJson.push({
-                id: placemark.properties.get('id'),
-                latitude: placemark.geometry.getCoordinates()[0],
-                longitude: placemark.geometry.getCoordinates()[1]
-            });
-        });
-
-        console.log(placemarkJson);
 
         fetch('/test_alarm',{
             method: 'POST',
@@ -148,6 +172,8 @@ function init() {
         .then(response => response.json())
         .then(data => console.log(data))
         .catch(error => console.error(error));
+
+
     });
 
 };

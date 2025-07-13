@@ -14,7 +14,7 @@ from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.security.websocket import OriginValidator
 from django.core.asgi import get_asgi_application
 
-from uavsoundanalysis.uavanalysis.routing import urlpatterns
+from uavanalysis.routing import urlpatterns
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "uavmanage.settings")
 # django.setup()

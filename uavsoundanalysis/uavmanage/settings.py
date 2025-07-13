@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-$)m^q)tff3_xc#fr8b2$k8+)r*ofnw#cg4j2ti#e!(ja=4dcs=
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0']
 
 # Application definition
 
@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "uavanalysis.apps.UavanalysisConfig",
+    "uavanalysis.apps.UavanalysisConfig"
 ]
 
 MIDDLEWARE = [

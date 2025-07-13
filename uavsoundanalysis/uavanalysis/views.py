@@ -1,11 +1,8 @@
 import asyncio
 
-from asgiref.sync import async_to_sync
-from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
 from django.shortcuts import render
 from django.http import JsonResponse
-from rest_framework.authentication import TokenAuthentication, SessionAuthentication, BasicAuthentication
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
@@ -23,12 +20,27 @@ def myMap(request):
 
 
 class TestAlarmView(APIView):
+    """
+    API endpoint for test alarm.
+
+    To be used for testing alarm trigger.
+
+    POST data format:
+    {
+        "placemarks": [
+            {
+                "id": "some_id",
+                "latitude": 0.0,
+                "longitude": 0.0
+            }
+        ]
+    }
+    """
     authentication_classes = [SessionAuthentication, BasicAuthentication]
     permission_classes = [IsAuthenticated]
     serializer_class = TestAlarmSerializer
 
     def post(self, request):
-        # print('TestAlarmView.post', request.__dict__)
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             data = serializer.validated_data
