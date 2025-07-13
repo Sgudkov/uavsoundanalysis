@@ -10,11 +10,6 @@ from .serializers import TestAlarmSerializer
 from .tasks import triggerAlarm
 
 
-# Create your views here.
-def index(request):
-    return render(request, 'index.html')
-
-
 def myMap(request):
     return render(request, 'uavanalysis/map.html')
 
