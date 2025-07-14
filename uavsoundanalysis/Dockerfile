@@ -15,7 +15,7 @@ ENV PYTHONUNBUFFERED=1
 # Upgrade pip
 RUN pip install --upgrade pip
 
-#RUN apt-get install ffmpeg libavcodec-extra
+RUN apt update && apt install ffmpeg -y
 
 # Copy the Django project  and install dependencies
 COPY requirements.txt  /app/

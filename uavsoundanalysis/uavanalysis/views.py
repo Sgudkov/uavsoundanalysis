@@ -1,8 +1,9 @@
 import asyncio
 
-from django.shortcuts import render
 from django.http import JsonResponse
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from django.shortcuts import render
+from rest_framework.authentication import (BasicAuthentication,
+                                           SessionAuthentication)
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
@@ -11,7 +12,7 @@ from .tasks import triggerAlarm
 
 
 def myMap(request):
-    return render(request, 'uavanalysis/map.html')
+    return render(request, "uavanalysis/map.html")
 
 
 class TestAlarmView(APIView):
@@ -31,6 +32,7 @@ class TestAlarmView(APIView):
         ]
     }
     """
+
     authentication_classes = [SessionAuthentication, BasicAuthentication]
     permission_classes = [IsAuthenticated]
     serializer_class = TestAlarmSerializer
@@ -39,7 +41,7 @@ class TestAlarmView(APIView):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             data = serializer.validated_data
-            asyncio.run(triggerAlarm(request.user, data['placemarks']))
+            asyncio.run(triggerAlarm(request.user, data["placemarks"]))
             return JsonResponse({"status": "success", "data": data})
         else:
             return JsonResponse({"status": "error", "errors": serializer.errors})

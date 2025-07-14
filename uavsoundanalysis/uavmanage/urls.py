@@ -18,7 +18,6 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-from uavanalysis.consumers import MyWebSocketConsumer
 from uavanalysis.routing import urlpatterns
 
 urlpatterns = [
