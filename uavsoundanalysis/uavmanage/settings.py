@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
+
 import os
 from pathlib import Path
 
@@ -25,7 +26,7 @@ SECRET_KEY = "django-insecure-$)m^q)tff3_xc#fr8b2$k8+)r*ofnw#cg4j2ti#e!(ja=4dcs=
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0']
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "0.0.0.0"]
 
 # Application definition
 
@@ -39,7 +40,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "uavanalysis.apps.UavanalysisConfig"
+    "uavanalysis.apps.UavanalysisConfig",
 ]
 
 MIDDLEWARE = [
@@ -83,9 +84,7 @@ DATABASES = {
 }
 
 CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels.layers.InMemoryChannelLayer'
-    },
+    "default": {"BACKEND": "channels.layers.InMemoryChannelLayer"},
 }
 
 # Password validation
@@ -107,9 +106,9 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.TokenAuthentication',
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework.authentication.TokenAuthentication",
         # Add other authentication classes as needed
     ]
 }

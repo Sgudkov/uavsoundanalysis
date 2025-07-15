@@ -1,4 +1,5 @@
 import logging
+from typing import Optional
 
 from channels.layers import get_channel_layer
 from django.contrib.auth.models import User
@@ -6,7 +7,7 @@ from django.contrib.auth.models import User
 logger = logging.getLogger(__name__)
 
 
-async def triggerAlarm(user: User = None, coordinates: list[dict] = None):
+async def triggerAlarm(user: User = User(), coordinates: Optional[list[dict]] = None):
     """
     Trigger an alarm for all clients connected to the 'room_name' group.
 
