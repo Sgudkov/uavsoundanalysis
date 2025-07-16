@@ -16,14 +16,12 @@ Including another URLconf
 """
 
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import include, path
 
-from uavanalysis.consumers import MyWebSocketConsumer
 from uavanalysis.routing import urlpatterns
 
 urlpatterns = [
     path("", include("uavanalysis.urls")),
     path("admin/", admin.site.urls),
-    path('ws/', include(urlpatterns)),
-
+    path("ws/", include(urlpatterns)),
 ]

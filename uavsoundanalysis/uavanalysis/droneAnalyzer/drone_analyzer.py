@@ -6,17 +6,27 @@ from sklearn.preprocessing import StandardScaler
 
 
 class DroneAnalyzer:
+    """
+    Class for analyzing audio file to detect if it contains drone sound.
+
+    Attributes:
+        file_path (str): Path to the audio file.
+
+    Methods:
+        is_drone: Returns True if the audio file contains drone sound, False otherwise.
+
+    Notes:
+        The class uses a pre-trained svm model to analyze the audio file.
+        The features used for analysis are mel-frequency cepstral coefficients (mfccs) and their standard deviation.
+    """
 
     def __init__(self, file_path: str):
         self.file_path = file_path
-        self.features = []
+        self.features: list = []
 
     def is_drone(self) -> bool:
         self.__extract_features()
         return bool(self.__predict())
-
-    def __analyze(self):
-        pass
 
     def __extract_features(self):
         # Load the audio file
