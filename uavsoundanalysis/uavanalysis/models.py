@@ -7,5 +7,7 @@ class Coordinates(models.Model):
     longitude = models.FloatField()
     label = models.CharField(max_length=255)
 
+    objects = models.Manager()
+
     def __str__(self):
         return self.label

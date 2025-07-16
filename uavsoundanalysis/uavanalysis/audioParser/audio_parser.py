@@ -95,7 +95,7 @@ class AudioParser:
                 self.alarm_triggered = True
 
             # Remove converted file
-            os.remove(converted_file_path)
+            # os.remove(converted_file_path)
 
         except Exception as e:
             print(e)
@@ -103,6 +103,6 @@ class AudioParser:
     def _convert_to_wav(self, file_path):
         audio = AudioSegment.from_file(file_path)
         converted_path = file_path.replace(".wav", "_converted.wav")
-        audio = audio[self.start_audio_time : self.end_audio_time]
-        audio.export(converted_path, format="wav", bitrate="192k")
+        audio = audio[self.start_audio_time: self.end_audio_time]
+        audio.export(converted_path, format="wav", bitrate="320k")
         return converted_path

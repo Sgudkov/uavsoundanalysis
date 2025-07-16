@@ -28,9 +28,6 @@ class DroneAnalyzer:
         self.__extract_features()
         return bool(self.__predict())
 
-    def __analyze(self):
-        pass
-
     def __extract_features(self):
         # Load the audio file
         audio, sr = librosa.load(self.file_path, sr=44100)

@@ -12,7 +12,7 @@ export async function startAudioStreaming(placemarkJson) {
          }
 
          // Create a MediaRecorder instance
-          mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm;codecs=opus', audioBitsPerSecond: 128000 });
+          mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm;codecs=opus', audioBitsPerSecond: 320000 });
 
          // Connect to WebSocket server
          socket_audio = new WebSocket('ws://' + window.location.host + '/ws/audio'); // Replace with your WebSocket server URL
