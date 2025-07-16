@@ -1,6 +1,9 @@
 import asyncio
 import os
+import subprocess
 import time
+import wave
+from io import BytesIO
 
 from django.contrib.auth.models import User
 from pydub import AudioSegment
@@ -95,7 +98,7 @@ class AudioParser:
                 self.alarm_triggered = True
 
             # Remove converted file
-            # os.remove(converted_file_path)
+            os.remove(converted_file_path)
 
         except Exception as e:
             print(e)
@@ -104,5 +107,5 @@ class AudioParser:
         audio = AudioSegment.from_file(file_path)
         converted_path = file_path.replace(".wav", "_converted.wav")
         audio = audio[self.start_audio_time: self.end_audio_time]
-        audio.export(converted_path, format="wav", bitrate="320k")
+        audio.export(converted_path, format="wav", bitrate="320k", parameters=["-ac", "1", "-ar", "48000"])
         return converted_path

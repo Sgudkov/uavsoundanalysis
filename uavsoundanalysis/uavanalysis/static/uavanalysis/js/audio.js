@@ -6,13 +6,17 @@ export async function startAudioStreaming(placemarkJson) {
          const stream = await navigator.mediaDevices.getUserMedia({ audio: { sampleRate: 48000, channelCount: 2, sampleSize: 16, frameRate: 30 } });
 
          // Check if browser supports MediaRecorder
-         if (!MediaRecorder.isTypeSupported('audio/webm;codecs=opus')) {
+         if (!MediaRecorder.isTypeSupported('audio/webm')) {
              alert('Browser not supported for MediaRecorder');
              return;
          }
 
          // Create a MediaRecorder instance
-          mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm;codecs=opus', audioBitsPerSecond: 320000 });
+          mediaRecorder = new MediaRecorder(stream, {
+            mimeType: 'audio/webm',
+            audioBitsPerSecond: 320000,
+            bitrate: 320000
+          });
 
          // Connect to WebSocket server
          socket_audio = new WebSocket('ws://' + window.location.host + '/ws/audio'); // Replace with your WebSocket server URL
