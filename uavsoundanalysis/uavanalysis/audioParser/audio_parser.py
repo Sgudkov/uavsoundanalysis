@@ -85,7 +85,7 @@ class AudioParser:
             droneAnalyzer = DroneAnalyzer(converted_file_path)
 
             # Check if it is a drone and trigger alarm
-            if droneAnalyzer.is_drone() and not self.alarm_triggered:
+            if not droneAnalyzer.is_drone() and not self.alarm_triggered:
                 # For test use only one placemark
                 coordinates = [x for x in placemarks if x["id"] == 1]
 

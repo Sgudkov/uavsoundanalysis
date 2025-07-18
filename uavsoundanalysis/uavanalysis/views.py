@@ -2,17 +2,20 @@ import asyncio
 
 from django.http import JsonResponse
 from django.shortcuts import render
+from django.views.generic import ListView
 from rest_framework.authentication import (BasicAuthentication,
                                            SessionAuthentication)
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
+from .models import Coordinates
 from .serializers import TestAlarmSerializer
 from .tasks import triggerAlarm
 
 
-def myMap(request):
-    return render(request, "map.html")
+class MapView(ListView):
+    model = Coordinates
+    template_name = "map.html"
 
 
 class TestAlarmView(APIView):

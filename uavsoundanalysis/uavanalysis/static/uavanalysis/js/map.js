@@ -18,7 +18,6 @@ function init() {
 
     var blinkIntervalIdList = [];
     var alarmElementList = [];
-    var mediaRecorder = null;
 
     var placemarkJson = [];
 
@@ -26,30 +25,17 @@ function init() {
     var socket = new WebSocket('ws://'+ window.location.host + '/ws/');
     var socket_audio = null;
 
+    // Event listener for messages received from the WebSocket
     socket.onmessage = function(event) {
         var data = JSON.parse(event.data);
 
         // Initialize the markers or update the markers
         if (data.action == "connected"){
             initMarkers(data, myMap);
-            setPlacemarksToContainer(data.coordinates);
         } else{
             updateMarkerbyAlarm(data, myMap);
         }
     };
-
-
-    // Set placemarks to HTML container
-    function setPlacemarksToContainer(placemarks) {
-        const placemarksListContainer = document.getElementById('placemarks-list');
-        placemarksListContainer.innerHTML = '';
-        placemarks.forEach((placemark) => {
-            const placemarkHTML =
-                `<div id = placemark-${placemark.id}> <span>${placemark.label}</span> <span>(${placemark.latitude}, ${placemark.longitude})</span> </div>`;
-            placemarksListContainer.innerHTML += placemarkHTML;
-        });
-    }
-
 
     // Function to blink a placemark
     function blinkPlacemark(placemark) {
@@ -58,9 +44,8 @@ function init() {
       placemark.options.set('iconColor', nextColor);
     }
 
-
+    // Update the markers based on the alarm data
     function updateMarkerbyAlarm(data, map) {
-        // Update the markers based on the alarm data
 
         blinkIntervalIdList.length = 0;
         alarmElementList.length = 0;
@@ -87,8 +72,9 @@ function init() {
 
     }
 
+    // Initialize the markers
     function initMarkers(data, map) {
-        // Initialize the markers
+
         const coordinates = data.coordinates;
         coordinates.forEach(function(coordinate) {
             var placemark = new ymaps.Placemark([
@@ -118,10 +104,12 @@ function init() {
 
     let startWorkButtonPressed = false;
 
+    // Event listener for the toogle start work button
     document.getElementById('start-work-button').addEventListener('click', function() {
 
         this.classList.toggle('clicked');
 
+        // Start or stop audio streaming
         if (!startWorkButtonPressed) {
             startAudioStreaming(placemarkJson);
             startWorkButtonPressed = true;
@@ -134,7 +122,7 @@ function init() {
 
     });
 
-    // Add event listeners to the buttons to send notifications to the WebSocket
+    // Stop alarm and blink the placemarks without sending data to the server
     document.getElementById('clear-alarm-button').addEventListener('click', function() {
 
         console.log('Clear alarm button clicked');
@@ -155,6 +143,7 @@ function init() {
 
     });
 
+    // Send alarm to WebSocket
     document.getElementById('test-alarm-button').addEventListener('click', function() {
         // Send notification to WebSocket
         console.log('Test alarm button clicked');
