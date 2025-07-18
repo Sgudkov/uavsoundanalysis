@@ -12,12 +12,14 @@
         </div>
         <div class="placemarks-list-container">
             <div id="placemarks-list">
+                {% if user.is_authenticated %}
                 {% for coordinates in object_list %}
                 <div id="placemark-{{ coordinates.id }}" class="placemark-item">
                     <span>{{ coordinates.label }}</span>
                     <span>{{ coordinates.latitude }}, {{ coordinates.longitude }}</span>
                 </div>
                 {% endfor %}
+                {% endif %}
             </div>
         </div>
         <div class="placeholder-text">
