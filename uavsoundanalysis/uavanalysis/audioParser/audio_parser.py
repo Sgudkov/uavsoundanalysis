@@ -1,9 +1,6 @@
 import asyncio
 import os
-import subprocess
 import time
-import wave
-from io import BytesIO
 
 from django.contrib.auth.models import User
 from pydub import AudioSegment

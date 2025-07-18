@@ -12,7 +12,7 @@ from .tasks import triggerAlarm
 
 
 def myMap(request):
-    return render(request, "uavanalysis/map.html")
+    return render(request, "map.html")
 
 
 class TestAlarmView(APIView):

@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% include 'navbar.html' %}
+<div class="split-screen">
+    <div class="map-container">
+        <div id="map" style="border: 1px solid #ddd; height: 100%;"></div>
+    </div>
+    <div class="right-container">
+        <div class="placemarks-header">
+            <p>Список активных меток</p>
+        </div>
+        <div class="placemarks-list-container">
+            <div id="placemarks-list"></div>
+        </div>
+        <div class="placeholder-text">
+            <p>Панель управления</p>
+        </div>
+        <div class="button-container">
+            {% csrf_token %}
+            <button class="button" id="clear-alarm-button">Стоп тревога</button>
+            <button class="button" id="test-alarm-button">Тест тревоги</button>
+            <button class="button" id="start-work-button">Начать работу</button>
+        </div>
+    </div>
+</div>
+
+
+{% endblock content %}
