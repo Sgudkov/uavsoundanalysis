@@ -1,0 +1,15 @@
+<div class="container-navbar">
+    <nav class="navbar">
+        <div class="navbar-brand">UAV Analysis</div>
+        {% if user.is_authenticated %}
+        <span> Привет {{ user.username }}</span>
+        <form action="{% url 'logout' %}" method="post" style="display: inline;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary">Выйти</button>
+        </form>
+        {% else %}
+        <a href="{% url 'login' %}" class="btn btn-login">Войти</a>
+        {% endif %}
+
+    </nav>
+</div>
