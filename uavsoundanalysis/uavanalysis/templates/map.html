@@ -11,7 +11,14 @@
             <p>Список активных меток</p>
         </div>
         <div class="placemarks-list-container">
-            <div id="placemarks-list"></div>
+            <div id="placemarks-list">
+                {% for coordinates in object_list %}
+                <div id="placemark-{{ coordinates.id }}" class="placemark-item">
+                    <span>{{ coordinates.label }}</span>
+                    <span>{{ coordinates.latitude }}, {{ coordinates.longitude }}</span>
+                </div>
+                {% endfor %}
+            </div>
         </div>
         <div class="placeholder-text">
             <p>Панель управления</p>
