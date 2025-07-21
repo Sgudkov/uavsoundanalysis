@@ -99,7 +99,6 @@ class MyThreadSocketConsumer(WebsocketConsumer):
 
     # Define event handlers
     def audio_parse(self, data: dict):
-
         # Parse audio data and trigger alarm if it is a drone sound
         self.audioParser.parse(data)
 
